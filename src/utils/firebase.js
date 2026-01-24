@@ -1,10 +1,11 @@
 import { initializeApp } from "firebase/app";
-import { getFirestore, collection, addDoc, query, where, onSnapshot, deleteDoc, getDocs } from "firebase/firestore";
+import { getDatabase, ref, push, onValue, remove, get } from "firebase/database";
 
-// Replace these with your Firebase config from Firebase Console
+// Your Firebase config
 const firebaseConfig = {
   apiKey: "AIzaSyCucgETvfP782hua_mdgn9PZ7FseBFGhTc",
   authDomain: "monrobot-2026.firebaseapp.com",
+  databaseURL: "https://monrobot-2026-default-rtdb.firebaseio.com", // You'll need to add this
   projectId: "monrobot-2026",
   storageBucket: "monrobot-2026.firebasestorage.app",
   messagingSenderId: "197425183097",
@@ -13,14 +14,15 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
-export const db = getFirestore(app);
+export const db = getDatabase(app);
 
 // Manual Results
 export async function saveManualResult(result) {
   try {
-    await addDoc(collection(db, "manual_results"), {
+    const resultsRef = ref(db, "manual_results");
+    await push(resultsRef, {
       ...result,
-      timestamp: new Date()
+      timestamp: Date.now()
     });
   } catch (error) {
     console.error("Error saving manual result:", error);
@@ -29,23 +31,25 @@ export async function saveManualResult(result) {
 }
 
 export function subscribeToManualResults(callback) {
-  const q = query(collection(db, "manual_results"));
-  return onSnapshot(q, (querySnapshot) => {
+  const resultsRef = ref(db, "manual_results");
+  return onValue(resultsRef, (snapshot) => {
     const results = [];
-    querySnapshot.forEach((doc) => {
-      results.push({ id: doc.id, ...doc.data() });
-    });
+    const data = snapshot.val();
+    if (data) {
+      Object.keys(data).forEach((key) => {
+        results.push({ id: key, ...data[key] });
+      });
+    }
     callback(results);
+  }, (error) => {
+    console.error("Error subscribing to manual results:", error);
   });
 }
 
 export async function clearAllManualResults() {
   try {
-    const q = query(collection(db, "manual_results"));
-    const querySnapshot = await getDocs(q);
-    querySnapshot.forEach(async (doc) => {
-      await deleteDoc(doc.ref);
-    });
+    const resultsRef = ref(db, "manual_results");
+    await remove(resultsRef);
   } catch (error) {
     console.error("Error clearing manual results:", error);
   }
@@ -54,9 +58,10 @@ export async function clearAllManualResults() {
 // Automatic Results
 export async function saveAutomaticResult(result) {
   try {
-    await addDoc(collection(db, "automatic_results"), {
+    const resultsRef = ref(db, "automatic_results");
+    await push(resultsRef, {
       ...result,
-      timestamp: new Date()
+      timestamp: Date.now()
     });
   } catch (error) {
     console.error("Error saving automatic result:", error);
@@ -65,23 +70,25 @@ export async function saveAutomaticResult(result) {
 }
 
 export function subscribeToAutomaticResults(callback) {
-  const q = query(collection(db, "automatic_results"));
-  return onSnapshot(q, (querySnapshot) => {
+  const resultsRef = ref(db, "automatic_results");
+  return onValue(resultsRef, (snapshot) => {
     const results = [];
-    querySnapshot.forEach((doc) => {
-      results.push({ id: doc.id, ...doc.data() });
-    });
+    const data = snapshot.val();
+    if (data) {
+      Object.keys(data).forEach((key) => {
+        results.push({ id: key, ...data[key] });
+      });
+    }
     callback(results);
+  }, (error) => {
+    console.error("Error subscribing to automatic results:", error);
   });
 }
 
 export async function clearAllAutomaticResults() {
   try {
-    const q = query(collection(db, "automatic_results"));
-    const querySnapshot = await getDocs(q);
-    querySnapshot.forEach(async (doc) => {
-      await deleteDoc(doc.ref);
-    });
+    const resultsRef = ref(db, "automatic_results");
+    await remove(resultsRef);
   } catch (error) {
     console.error("Error clearing automatic results:", error);
   }
