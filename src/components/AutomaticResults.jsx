@@ -49,6 +49,7 @@ export default function AutomaticResults({ automaticResults, onClearAutomatic })
             <table className="w-full border-collapse bg-white text-sm">
               <thead>
                 <tr className="bg-green-600 text-white">
+                  <th className="border border-gray-300 px-2 py-1 text-left font-semibold">TeamID</th>
                   <th className="border border-gray-300 px-2 py-1 text-left font-semibold">Team</th>
                   <th className="border border-gray-300 px-2 py-1 text-center font-semibold">Laps</th>
                   <th className="border border-gray-300 px-2 py-1 text-center font-semibold">Time</th>
@@ -60,6 +61,9 @@ export default function AutomaticResults({ automaticResults, onClearAutomatic })
                     key={index}
                     className={index % 2 === 0 ? "bg-gray-50" : "bg-white"}
                   >
+                    <td className="border border-gray-300 px-2 py-1 text-gray-800">
+                      {result.teamId}
+                    </td>
                     <td className="border border-gray-300 px-2 py-1 text-gray-800">
                       {result.teamName}
                     </td>
