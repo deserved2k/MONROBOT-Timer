@@ -89,7 +89,6 @@ export default function ManualMode({ teams, onSaveResult }) {
                 <h2 className="mb-4 text-xl font-semibold text-gray-800">
                     Manual Mode (5 Laps)
                 </h2>
-
                 <div className="mb-6">
                     <label className="block mb-3 text-sm font-medium text-gray-700">
                         Select a Team
