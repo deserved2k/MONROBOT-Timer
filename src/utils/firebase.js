@@ -5,7 +5,7 @@ import { getDatabase, ref, push, onValue, remove, get } from "firebase/database"
 const firebaseConfig = {
   apiKey: "AIzaSyCucgETvfP782hua_mdgn9PZ7FseBFGhTc",
   authDomain: "monrobot-2026.firebaseapp.com",
-  databaseURL: "https://monrobot-2026-default-rtdb.asia-southeast1.firebasedatabase.app/", // You'll need to add this
+  databaseURL: "https://monrobot-2026-default-rtdb.asia-southeast1.firebasedatabase.app", // You'll need to add this
   projectId: "monrobot-2026",
   storageBucket: "monrobot-2026.firebasestorage.app",
   messagingSenderId: "197425183097",
