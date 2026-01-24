@@ -6,20 +6,20 @@ import ManualResults from "./components/ManualResults";
 import AutomaticResults from "./components/AutomaticResults";
 import { loadDroneTeamsFromCSV } from "./utils/csvParser";
 import { 
-  loadManualResults, 
-  loadAutomaticResults,
-  saveManualResults,
-  saveAutomaticResults,
-  clearManualResults,
-  clearAutomaticResults
-} from "./utils/storage";
+  saveManualResult,
+  subscribeToManualResults,
+  clearAllManualResults,
+  saveAutomaticResult,
+  subscribeToAutomaticResults,
+  clearAllAutomaticResults
+} from "./utils/firebase";
 
 export default function App() {
   const [mode, setMode] = useState("manual"); 
   const [teams, setTeams] = useState([]);
   const [loadingTeams, setLoadingTeams] = useState(true);
-  const [manualResults, setManualResults] = useState(() => loadManualResults());
-  const [automaticResults, setAutomaticResults] = useState(() => loadAutomaticResults());
+  const [manualResults, setManualResults] = useState([]);
+  const [automaticResults, setAutomaticResults] = useState([]);
 
   useEffect(() => {
     async function loadTeams() {
@@ -46,53 +46,57 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    saveManualResults(manualResults);
-  }, [manualResults]);
+    // Subscribe to manual results in real-time
+    const unsubscribeManual = subscribeToManualResults((results) => {
+      setManualResults(results);
+    });
 
-  // Save automatic results to localStorage whenever they change
-  useEffect(() => {
-    saveAutomaticResults(automaticResults);
-  }, [automaticResults]);
+    // Subscribe to automatic results in real-time
+    const unsubscribeAutomatic = subscribeToAutomaticResults((results) => {
+      setAutomaticResults(results);
+    });
 
+    return () => {
+      unsubscribeManual();
+      unsubscribeAutomatic();
+    };
+  }, []);
 
-
-  // Poll localStorage every 5 seconds to sync results across multiple screens
-  useEffect(() => {
-    const pollInterval = setInterval(() => {
-      const updatedManual = loadManualResults();
-      const updatedAutomatic = loadAutomaticResults();
-
-      // Only update state if data has changed (avoid unnecessary re-renders)
-      if (JSON.stringify(updatedManual) !== JSON.stringify(manualResults)) {
-        setManualResults(updatedManual);
-      }
-      if (JSON.stringify(updatedAutomatic) !== JSON.stringify(automaticResults)) {
-        setAutomaticResults(updatedAutomatic);
-      }
-    }, 5000); // Check every 5 seconds
-
-    return () => clearInterval(pollInterval);
-  }, [manualResults, automaticResults]);
-
-  const handleSaveManual = (result) => {
-    setManualResults([...manualResults, result]);
-  };
-
-  const handleSaveAutomatic = (result) => {
-    setAutomaticResults([...automaticResults, result]);
-  };
-
-  const handleClearManualResults = () => {
-    if (window.confirm("Are you sure you want to clear all manual mode results?")) {
-      setManualResults([]);
-      clearManualResults();
+  const handleSaveManual = async (result) => {
+    try {
+      await saveManualResult(result);
+    } catch (error) {
+      console.error("Failed to save manual result:", error);
+      alert("Failed to save result. Please try again.");
     }
   };
 
-  const handleClearAutomaticResults = () => {
+  const handleSaveAutomatic = async (result) => {
+    try {
+      await saveAutomaticResult(result);
+    } catch (error) {
+      console.error("Failed to save automatic result:", error);
+      alert("Failed to save result. Please try again.");
+    }
+  };
+
+  const handleClearManualResults = async () => {
+    if (window.confirm("Are you sure you want to clear all manual mode results?")) {
+      try {
+        await clearAllManualResults();
+      } catch (error) {
+        console.error("Failed to clear manual results:", error);
+      }
+    }
+  };
+
+  const handleClearAutomaticResults = async () => {
     if (window.confirm("Are you sure you want to clear all automatic mode results?")) {
-      setAutomaticResults([]);
-      clearAutomaticResults();
+      try {
+        await clearAllAutomaticResults();
+      } catch (error) {
+        console.error("Failed to clear automatic results:", error);
+      }
     }
   };
 
