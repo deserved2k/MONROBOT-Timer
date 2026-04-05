@@ -6,7 +6,7 @@ export default function AutomaticMode({ teams, onSaveResult }) {
         return teams.filter(team => team.id && team.id.startsWith('TDRA'));
     }, [teams]);
 
-    const [time, setTime] = useState(300000); // 300 seconds in milliseconds
+    const [time, setTime] = useState(300000);
     const [isRunning, setIsRunning] = useState(false);
     const [selectedTeam, setSelectedTeam] = useState("");
     const [showLapModal, setShowLapModal] = useState(false);
