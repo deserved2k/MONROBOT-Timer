@@ -16,7 +16,7 @@ export async function loadDroneTeamsFromCSV(csvPath) {
             .map((row, index) => {
               return {
                 id: row['Team ID'] || row['team id'] || `DRONE${index + 1}`,
-                name: row['Team Robot Name'] || row['team robot name'] || 'Unknown Team',
+                name: row['Team Name'] || row['team name'] || 'Unknown Team',
                 category: row['Category'] || row['category'] || '',
                 organisation: row['Organisation'] || row['organisation'] || '',
                 fullData: row
