@@ -3,14 +3,13 @@ import { loadRobotRugbyTeamsFromCSV } from "../utils/csvParser";
 import "../index.css";
 
 const FALLBACK_TEAMS = [
-  { id: "T001", TeamName: "Team Alpha" },
-  { id: "T002", TeamName: "Team Beta" },
-  { id: "T003", TeamName: "Team Gamma" },
-  { id: "T004", TeamName: "Team Delta" },
-  { id: "T005", TeamName: "Team Epsilon" },
-  { id: "T006", TeamName: "Team Zeta" },
-  { id: "T007", TeamName: "Team Eta" },
-  { id: "T008", TeamName: "Team Theta" },
+  { id: "T001", TeamName: "Mogul 1" },
+  { id: "T002", TeamName: "Mogul 2" },
+  { id: "T003", TeamName: "Mogul 3" },
+  { id: "T004", TeamName: "Fenrir" },
+  { id: "T005", TeamName: "New Era Falcon 1" },
+  { id: "T006", TeamName: "New Era Falcon 2" },
+  { id: "T007", TeamName: "YOGURT" },
 ];
 
 export default function RugbyMode({ teams }) {
